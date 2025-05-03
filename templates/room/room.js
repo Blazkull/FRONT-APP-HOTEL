@@ -231,7 +231,7 @@ function editRoom(room) {
 
 
 async function toggleRoomStatus(id, activate) {
-    const actionText = activate ? "activar" : "marcar como inactivo";
+    const actionText = activate ? "activar" : "marcada como inactiva";
     const confirmText = activate ? "Sí, activar" : "Sí, marcar como inactivo";
     const successMessage = activate ? "La habitación ha sido activada." : "La habitación ha sido marcada como inactiva.";
 
