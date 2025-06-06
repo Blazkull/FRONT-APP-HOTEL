@@ -169,32 +169,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Cambiar estado del usuario
-    window.toggleUserStatus = async function (id, currentStatus) {
-        // PREVENIR QUE EL USUARIO LOGUEADO SE DESACTIVE A SÍ MISMO
-        if (id === loggedInUserId && currentStatus === true) {
-            Swal.fire({
-                title: "Acción no permitida",
-                text: "No puedes desactivar tu propia cuenta mientras estás logueado.",
-                icon: "info",
-                confirmButtonText: "Entendido"
-            });
-            return; // Detener la ejecución de la función
-        }
-
-        const actionText = currentStatus ? "inactivar" : "activar";
-        const confirmButtonColor = currentStatus ? "#dc3545" : "#198754"; // Rojo para inactivar, Verde para activar
-
-        const result = await Swal.fire({
-            title: `¿Estás seguro de ${actionText} este usuario?`,
-            text: `El usuario será ${actionText === 'inactivar' ? 'marcado como inactivo' : 'activado'}.`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: `Sí, ${actionText}`,
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: confirmButtonColor,
-            cancelButtonColor: "#6c757d"
+  // Cambiar estado del usuario
+window.toggleUserStatus = async function (id, currentStatus) {
+    // PREVENIR QUE EL USUARIO LOGUEADO SE DESACTIVE A SÍ MISMO
+    if (id === loggedInUserId && currentStatus === true) {
+        Swal.fire({
+            title: "Acción no permitida",
+            text: "No puedes desactivar tu propia cuenta mientras estás logueado.",
+            icon: "info",
+            confirmButtonText: "Entendido"
         });
+        return; // Detener la ejecución de la función
+    }
+
+    const actionText = currentStatus ? "inactivar" : "activar";
+    const confirmButtonColor = currentStatus ? "#dc3545" : "#198754"; // Rojo para inactivar, Verde para activar
+
+    const result = await Swal.fire({
+        title: `¿Estás seguro de ${actionText} este usuario?`,
+        text: `El usuario será ${actionText === 'inactivar' ? 'marcado como inactivo' : 'activado'}.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `Sí, ${actionText}`,
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: confirmButtonColor,
+        cancelButtonColor: "#6c757d"
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const authAxios = getAuthAxios();
+            await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus }); 
+            Swal.fire("¡Éxito!", `El usuario ha sido ${actionText === 'inactivar' ? 'inactivado' : 'activado'} correctamente.`, "success");
+            fetchUsers(); // Vuelve a cargar los usuarios para actualizar la tabla
+        } catch (error) {
+            handleAxiosError(error, "Error al cambiar el estado del usuario", `No se pudo ${actionText} el usuario.`);
+        }
+    }
+};
 
         if (result.isConfirmed) {
             try {
@@ -208,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Guardar usuario (crear o actualizar)
+     // Guardar usuario (crear o actualizar)
     userForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const id = document.getElementById("userId").value;
