@@ -199,8 +199,8 @@ window.toggleUserStatus = async function (id, currentStatus) {
     if (result.isConfirmed) {
         try {
             const authAxios = getAuthAxios();
-            // *** SOLUCIÓN: Cambia la URL para usar el endpoint específico de cambio de estado ***
-            await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus }); // <-- ¡Aquí está el cambio!
+            /
+            await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus });
             Swal.fire("¡Éxito!", `El usuario ha sido ${actionText === 'inactivar' ? 'inactivado' : 'activado'} correctamente.`, "success");
             fetchUsers(); // Volver a cargar los usuarios para actualizar la tabla
         } catch (error) {
