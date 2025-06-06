@@ -199,26 +199,15 @@ window.toggleUserStatus = async function (id, currentStatus) {
     if (result.isConfirmed) {
         try {
             const authAxios = getAuthAxios();
-            await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus }); 
+            // *** SOLUCIÓN: Cambia la URL para usar el endpoint específico de cambio de estado ***
+            await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus }); // <-- ¡Aquí está el cambio!
             Swal.fire("¡Éxito!", `El usuario ha sido ${actionText === 'inactivar' ? 'inactivado' : 'activado'} correctamente.`, "success");
-            fetchUsers(); // Vuelve a cargar los usuarios para actualizar la tabla
+            fetchUsers(); // Volver a cargar los usuarios para actualizar la tabla
         } catch (error) {
             handleAxiosError(error, "Error al cambiar el estado del usuario", `No se pudo ${actionText} el usuario.`);
         }
     }
 };
-
-        if (result.isConfirmed) {
-            try {
-                const authAxios = getAuthAxios();
-                await authAxios.patch(`${apiUrl}${id}`, { active: !currentStatus });
-                Swal.fire("¡Éxito!", `El usuario ha sido ${actionText === 'inactivar' ? 'inactivado' : 'activado'} correctamente.`, "success");
-                fetchUsers(); // Re-fetch to update the table
-            } catch (error) {
-                handleAxiosError(error, "Error al cambiar el estado del usuario", `No se pudo ${actionText} el usuario.`);
-            }
-        }
-    };
 
      // Guardar usuario (crear o actualizar)
     userForm.addEventListener("submit", async (e) => {
@@ -256,7 +245,7 @@ window.toggleUserStatus = async function (id, currentStatus) {
             handleAxiosError(error, "Error al guardar usuario", "No se pudo guardar el usuario. Verifica los datos e intenta de nuevo.");
         }
     });
-
+    
     // Event listeners para filtros y búsqueda
     statusFilter.addEventListener("change", renderFilteredUsers);
     document.getElementById("searchInput").addEventListener("input", renderFilteredUsers);
