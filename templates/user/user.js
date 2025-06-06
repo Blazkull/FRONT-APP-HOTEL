@@ -2,9 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const apiUrl = "https://app-reservation-hotel-web.onrender.com/api/user/";
     let users = [];
 
-    // IMPORTANTE: Necesitas una forma de obtener el ID del usuario actualmente logueado.
-    // Asumo que se almacena en localStorage después del login.
-    // Reemplaza 'loggedInUserId' con la clave real que uses para guardar el ID del usuario.
+
     const loggedInUserId = parseInt(localStorage.getItem("loggedInUserId"));
 
     const userForm = document.getElementById("userForm");
@@ -169,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-  // Cambiar estado del usuario
+    // Cambiar estado del usuario
 window.toggleUserStatus = async function (id, currentStatus) {
     // PREVENIR QUE EL USUARIO LOGUEADO SE DESACTIVE A SÍ MISMO
     if (id === loggedInUserId && currentStatus === true) {
@@ -199,16 +197,18 @@ window.toggleUserStatus = async function (id, currentStatus) {
     if (result.isConfirmed) {
         try {
             const authAxios = getAuthAxios();
-            await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus });
+            // *** ¡EL CAMBIO CRÍTICO ESTÁ AQUÍ! ***
+            // Apunta al endpoint correcto para actualizar el estado del usuario.
+            await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus }); // <-- AÑADE /status
             Swal.fire("¡Éxito!", `El usuario ha sido ${actionText === 'inactivar' ? 'inactivado' : 'activado'} correctamente.`, "success");
-            fetchUsers(); // Volver a cargar los usuarios para actualizar la tabla
+            fetchUsers(); // Vuelve a cargar los usuarios para actualizar la tabla
         } catch (error) {
             handleAxiosError(error, "Error al cambiar el estado del usuario", `No se pudo ${actionText} el usuario.`);
         }
     }
 };
 
-     // Guardar usuario (crear o actualizar)
+    // Guardar usuario (crear o actualizar)
     userForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const id = document.getElementById("userId").value;
@@ -244,7 +244,7 @@ window.toggleUserStatus = async function (id, currentStatus) {
             handleAxiosError(error, "Error al guardar usuario", "No se pudo guardar el usuario. Verifica los datos e intenta de nuevo.");
         }
     });
-    
+
     // Event listeners para filtros y búsqueda
     statusFilter.addEventListener("change", renderFilteredUsers);
     document.getElementById("searchInput").addEventListener("input", renderFilteredUsers);
@@ -283,3 +283,30 @@ function toggleSidebar() {
     sidebar.classList.toggle("sidebar-hidden");
     mainContent.classList.toggle("main-collapsed");
 }
+
+// Cerrar sesión
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    Swal.fire({
+        title: "¿Cerrar sesión?",
+        text: "Tu sesión actual se cerrará.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, cerrar sesión",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem("token"); // Elimina el token
+            Swal.fire({
+                title: "Sesión cerrada",
+                text: "Has cerrado sesión correctamente.",
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = "/index.html"; // Redirige al login
+            });
+        }
+    });
+});
