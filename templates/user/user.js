@@ -197,7 +197,6 @@ window.toggleUserStatus = async function (id, currentStatus) {
     if (result.isConfirmed) {
         try {
             const authAxios = getAuthAxios();
-            // *** ¡EL CAMBIO CRÍTICO ESTÁ AQUÍ! ***
             // Apunta al endpoint correcto para actualizar el estado del usuario.
             await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus }); // <-- AÑADE /status
             Swal.fire("¡Éxito!", `El usuario ha sido ${actionText === 'inactivar' ? 'inactivado' : 'activado'} correctamente.`, "success");
