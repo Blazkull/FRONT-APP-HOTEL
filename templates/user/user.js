@@ -199,7 +199,6 @@ window.toggleUserStatus = async function (id, currentStatus) {
     if (result.isConfirmed) {
         try {
             const authAxios = getAuthAxios();
-            /
             await authAxios.patch(`${apiUrl}${id}/status`, { active: !currentStatus });
             Swal.fire("¡Éxito!", `El usuario ha sido ${actionText === 'inactivar' ? 'inactivado' : 'activado'} correctamente.`, "success");
             fetchUsers(); // Volver a cargar los usuarios para actualizar la tabla
