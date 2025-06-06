@@ -36,11 +36,11 @@ async function fetchData() {
         const authAxios = getAuthAxios(); // Obtener la instancia de Axios con el token
 
         const [usersResponse, clientsResponse, roomsResponse, statusResponse, reservationsResponse] = await Promise.all([
-            authAxios.get("http://127.0.0.1:8000/api/user"),
-            authAxios.get("http://127.0.0.1:8000/api/client"),
-            authAxios.get("http://127.0.0.1:8000/api/room"),
-            authAxios.get("http://127.0.0.1:8000/api/reservationstatus"),
-            authAxios.get("http://127.0.0.1:8000/api/reservations"),
+            authAxios.get("https://app-reservation-hotel-web.onrender.com/api/user"),
+            authAxios.get("https://app-reservation-hotel-web.onrender.com/api/client"),
+            authAxios.get("https://app-reservation-hotel-web.onrender.com/api/room"),
+            authAxios.get("https://app-reservation-hotel-web.onrender.com/api/reservationstatus"),
+            authAxios.get("https://app-reservation-hotel-web.onrender.com/api/reservations"),
         ]);
 
         users = usersResponse.data;
@@ -236,7 +236,7 @@ async function deleteReservation(id) {
     if (result.isConfirmed) {
         try {
             const authAxios = getAuthAxios();
-            await authAxios.delete(`http://127.0.0.1:8000/api/reservations/${id}`);
+            await authAxios.delete(`https://app-reservation-hotel-web.onrender.com/api/reservations/${id}`);
             reservations = reservations.filter(r => r.id !== id);
             populateTables();
             Swal.fire(
@@ -302,7 +302,7 @@ document.getElementById('reservationForm').addEventListener('submit', async func
     try {
         if (reservationId) {
             // Si hay ID, es una edición
-            const response = await authAxios.patch(`http://127.0.0.1:8000/api/reservations/${reservationId}`, reservationData);
+            const response = await authAxios.patch(`https://app-reservation-hotel-web.onrender.com/api/reservations/${reservationId}`, reservationData);
             const updatedReservation = response.data;
             const index = reservations.findIndex(r => r.id === updatedReservation.id);
             if (index !== -1) {
@@ -317,7 +317,7 @@ document.getElementById('reservationForm').addEventListener('submit', async func
             );
         } else {
             // Si no hay ID, es una creación
-            const response = await authAxios.post('http://127.0.0.1:8000/api/reservations/', reservationData);
+            const response = await authAxios.post('https://app-reservation-hotel-web.onrender.com/api/reservations/', reservationData);
             reservations.push(response.data); // Agrega la nueva reserva
             populateTables(); // Recarga las reservas en la tabla
             document.getElementById('reservationModal').querySelector('.btn-close').click(); // Cierra el modal

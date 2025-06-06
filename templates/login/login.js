@@ -5,7 +5,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     const password = document.getElementById("password").value;
 
     try {
-        const response = await axios.post("http://127.0.0.1:8000/api/login", {
+        const response = await axios.post("https://app-reservation-hotel-web.onrender.com/api/login", {
             username,
             password
         });
@@ -22,11 +22,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             </div>
         `;
 
-        // Redirigir al dashboard después de un breve retraso o inmediatamente
-        // Puedes usar un setTimeout si quieres que el mensaje de éxito se muestre un momento.
-        // setTimeout(() => {
-        //     window.location.href = "/templates/dashboard/dashboard.html";
-        // }, 1000); // Redirige después de 1 segundo
+
         window.location.href = "/templates/dashboard/dashboard.html";
 
     } catch (error) {
